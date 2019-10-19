@@ -24,7 +24,7 @@
                             <div class="form-group col-md-6">
                                 <label for="title">Titulo</label>
                                 <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="title" autofocus>
-                                <small class="form-text text-muted">Escribe un título que describa con precisión tu evidencia.</small>
+                                <small class="form-text text-muted">Escribe un título que describa con precisión tu evidencia (mínimo 5 caracteres)</small>
 
                                 @error('title')
                                     <span class="invalid-feedback" role="alert">
@@ -93,7 +93,7 @@
                                 }
                             </style>
 
-                            <small class="form-text text-muted">Escribe una descripción concisa de tu evidencia (entre 50 y 20000 caracteres).</small>
+                            <small class="form-text text-muted">Escribe una descripción concisa de tu evidencia (entre 10 y 20000 caracteres).</small>
 
                             @error('description')
                                 <span class="invalid-feedback" role="alert">

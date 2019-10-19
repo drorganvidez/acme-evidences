@@ -41,6 +41,16 @@ class EvidenceController extends Controller
      */
     public function new()
     {
+
+        /*
+           Puede acceder a todas las evidencias:
+               - Cualquiera que no sea el administrador
+       */
+        $es_administrador = Auth::user()->is_administrator;
+        if($es_administrador){
+            return redirect("/home");
+        }
+
         $comites = Comite::all();
         return view('evidences.new', ['comites' => $comites]);
     }
@@ -70,8 +80,13 @@ class EvidenceController extends Controller
 
     public function comite(){
 
+        /*
+           Puede acceder a todas las evidencias:
+               - El encargado de un comité
+       */
+
         // MIDDLEWARE: SOLO PUEDEN ACCEDER LOS QUE TENGAN UN COMITÉ ASIGNADO O SEA ADMINISTRADOR
-        if(!Auth::user()->is_comite && !Auth::user()->is_administrator){
+        if(!Auth::user()->is_comite){
             return redirect("/home");
         }
 
@@ -111,10 +126,10 @@ class EvidenceController extends Controller
     {
 
         $request->validate([
-            'title' => ['required', 'min:10', 'max:255'],
+            'title' => ['required', 'min:5', 'max:255'],
             'hours' => ['required', 'numeric', 'between:0.5,99.99', 'max:100'],
             'comite' => ['required', 'numeric', 'min: 1', 'max:14'],
-            'description' => ['required', 'min:50', 'max:20000']
+            'description' => ['required', 'min:10', 'max:20000']
         ]);
 
         // datos necesarios para crear evidencias
