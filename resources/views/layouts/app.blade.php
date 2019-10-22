@@ -104,7 +104,7 @@
 
                                 @if(Auth::user()->is_comite == 1)
 
-                                    <li class="nav-item {{ (request()->is('evidences/comite/*')) || (request()->is('evidences/comite/view/*')) ? 'active' : '' }}">
+                                    <li class="nav-item {{ (request()->is('evidences/comite')) || (request()->is('evidences/comite/*')) || (request()->is('evidences/comite/view/*')) ? 'active' : '' }}">
                                         <a class="nav-link" href="{{ route('evidences.comite') }}">{{ __('Evidencias de mi comité') }}</a>
                                     </li>
 

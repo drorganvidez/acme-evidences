@@ -57,9 +57,27 @@ class EvidenceController extends Controller
 
     public function list()
     {
+
+        /*
+           Puede acceder a todas las evidencias:
+               - Cualquiera que no sea el administrador
+       */
+        $es_administrador = Auth::user()->is_administrator;
+        if($es_administrador){
+            return redirect("/home");
+        }
+
         $id = Auth::user()->id;
         $evidences = DB::table('evidence')->where('id_user', $id)->orderBy('created_at', 'desc')->paginate(5);
-        return view('evidences.list', ['evidences' => $evidences]);
+
+        // información relativa a las evidencias
+        $lista = Evidence::where('id_user', Auth::user()->id)->get();
+        $total_horas = 0;
+        foreach($lista as $evidence){
+            $total_horas += $evidence->hours;
+        }
+        $count = $lista->count();
+        return view('evidences.list', ['evidences' => $evidences, 'count' => $count, 'total_horas' => $total_horas]);
     }
 
     public function all()
