@@ -1,6 +1,8 @@
 ## Acerca de Acme-Evidences
 
-Acme-Evidences es una app desarrollada en curso 2019/2020 para la asignatura Evolución y Gestión de la Configuración, 4º de Ingeniería del Software, Universidad de Sevilla
+Acme-Evidences es una app desarrollada en curso 2019/2020 para la asignatura Evolución y Gestión de la Configuración, 4º de Ingeniería del Software, Universidad de Sevilla.
+
+Se ha usado el framework PHP "Laravel" en su versión 5.8 (https://laravel.com/docs/5.8)
 
 ## ¿Cómo desplegar?
 
