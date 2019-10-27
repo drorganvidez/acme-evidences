@@ -192,6 +192,8 @@ class MeetingController extends Controller
             'title' => ['required', 'min:5', 'max:255'],
             'hours' => ['required', 'numeric', 'between:0.5,99.99', 'max:100'],
             'type' => ['required', 'numeric', 'min: 1', 'max:2'],
+            'place' => ['required', 'min:5', 'max:255'],
+            'datetime' => ['required'],
             'lista_usuarios' => ['required']
         ]);
 
@@ -202,7 +204,9 @@ class MeetingController extends Controller
             'id_comite' => $id_comite,
             'title' => $request->title,
             'hours' => $request->hours,
-            'type' => $request->type
+            'type' => $request->type,
+            'place' => $request->place,
+            'datetime' => $request->datetime
         ]);
 
         // 2. Guardamos todos los asistentes de esa reunión
@@ -311,5 +315,68 @@ class MeetingController extends Controller
 
         return view('meetings.new', ['meeting' => $meeting, 'listas' => $listas]);
 
+    }
+
+    public function attendees($id){
+
+        // Obtenemos los ids asistentes
+        $meeting_attendees = MeetingAttendee::where('id_meeting',$id)->get();
+
+        // Obtenemos los usuarios a partir de esos ids
+
+        $users = collect();
+
+        foreach($meeting_attendees as $meeting_attendee){
+            $user = User::find($meeting_attendee->id_user);
+            $users->push($user);
+        }
+
+        $usuarios = collect();
+
+        foreach ($users as $user) {
+            $usuarios->push(['id' => $user->id, 'name' => $user->name, 'surname' => $user->surname]);
+        }
+
+        return $usuarios;
+
+    }
+
+    public function attendee_update(Request $request){
+
+        $request->validate([
+            'title' => ['required', 'min:5', 'max:255'],
+            'hours' => ['required', 'numeric', 'between:0.5,99.99', 'max:100'],
+            'type' => ['required', 'numeric', 'min: 1', 'max:2'],
+            'lista_usuarios' => ['required']
+        ]);
+
+        // 1. Actualizamos la info de la reunión
+        $meeting = Meeting::find($request->id);
+        $meeting->title = $request->title;
+        $meeting->hours = $request->hours;
+        $meeting->type = $request->type;
+        $meeting->place = $request->place;
+        $meeting->datetime = $request->datetime;
+        $meeting->save();
+
+
+        // 2. Actualizamos todos los asistentes de esa reunión
+        $ids = explode(" ", $request->lista_usuarios);
+
+        MeetingAttendee::where('id_meeting',$request->id)->delete();
+
+        foreach ($ids as $id_user) {
+
+            // 2. Añadimos usuarios a dicha lista
+            MeetingAttendee::create([
+                'id_meeting' => $meeting->id,
+                'id_user' => $id_user
+            ]);
+
+        }
+
+
+
+        return redirect('meetings/list');
     }
 }

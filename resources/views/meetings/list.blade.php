@@ -10,7 +10,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/home">Home</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Reuniones de mi comité</li>
-                            <li class="breadcrumb-item active" aria-current="page">Listas predefinidas</li>
+                            <li class="breadcrumb-item active" aria-current="page">Reuniones registradas</li>
                         </ol>
                     </nav>
 
@@ -40,6 +40,9 @@
                                     <thead class="thead-light">
                                     <tr>
                                         <th scope="col">Título de la reunión</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Lugar</th>
+                                        <th scope="col">Fecha y hora</th>
                                         <th scope="col">Creada</th>
                                         <th scope="col">Herramientas</th>
                                     </tr>
@@ -48,6 +51,15 @@
                                     @foreach($meetings as $meeting)
                                         <tr scope="row">
                                             <td>{{$meeting->title}}</td>
+                                            <td>
+                                                @if($meeting->type == 1)
+                                                    ORDINARIA
+                                                @else
+                                                    EXTRAORDINARIA
+                                                @endif
+                                            </td>
+                                            <td>{{$meeting->place}}</td>
+                                            <td>{{\Carbon\Carbon::parse($meeting->datetime)->format('d/m/Y h:i')}}</td>
                                             <td>{{ \Carbon\Carbon::parse($meeting->created_at)->diffForHumans() }}</td>
                                             <td>
                                                 <a class="btn btn-primary btn-sm"

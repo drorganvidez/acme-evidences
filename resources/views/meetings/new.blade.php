@@ -6,13 +6,28 @@
             <div class="col-md-12">
                 <div class="card">
 
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Reuniones de mi comité</li>
-                            <li class="breadcrumb-item active" aria-current="page">Registrar nueva reunión</li>
-                        </ol>
-                    </nav>
+                    @if(request()->is('meetings/list/edit/*'))
+
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Reuniones de mi comité</li>
+                                <li class="breadcrumb-item active" aria-current="page"><a href="/meetings/list">Reuniones registradas</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Editando: {{$meeting->title}}</li>
+                            </ol>
+                        </nav>
+
+                    @else
+
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Reuniones de mi comité</li>
+                                <li class="breadcrumb-item active" aria-current="page">Registrar nueva reunión</li>
+                            </ol>
+                        </nav>
+
+                    @endif
 
 
                     <div class="card-body">
@@ -24,20 +39,48 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{route('meetings.lists')}}">Listas predefinidas</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route('meetings.list')}}">Reuniones registradas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{{route('meetings.new')}}">Registrar nueva reunión</a>
-                            </li>
+
+                            @if(request()->is('meetings/list/edit/*'))
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{{route('meetings.list')}}">Reuniones registradas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('meetings.new')}}">Registrar nueva reunión</a>
+                                </li>
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('meetings.list')}}">Reuniones registradas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{{route('meetings.new')}}">Registrar nueva reunión</a>
+                                </li>
+                            @endif
+
+
+
                         </ul>
 
                         <div class="card-body">
 
-                            <form method="POST"
-                                  action="{{ route('meeting.create') }}">
+                            @if(request()->is('meetings/list/edit/*'))
+
+                                <form method="POST"
+                                      action="{{ route('meeting.update') }}">
+
+                            @else
+
+                                <form method="POST"
+                                      action="{{ route('meeting.create') }}">
+
+                            @endif
+
+
 
                                 @csrf
+
+                                @if(request()->is('meetings/list/edit/*'))
+                                    <input type='hidden' id='id' name='id' value='{{$meeting->id}}' />
+                                @endif
 
                                 <input type='hidden' id='lista_usuarios'
                                        name='lista_usuarios'
@@ -70,7 +113,11 @@
                                         <label for="hours">Horas empleadas</label>
                                         <input id="hours" type="number" step="0.01"
                                                class="form-control @error('hours') is-invalid @enderror" name="hours"
-                                               value="{{ old('hours') }}" required autocomplete="hours" autofocus>
+                                               @if(old('hours'))
+                                                    value="{{old('hours')}}"
+                                               @elseif(request()->is('meetings/list/edit/*'))
+                                                    value="{{$meeting->hours}}"
+                                               @endif required autocomplete="hours" autofocus>
                                         <small class="form-text text-muted">Números enteros o decimales.</small>
 
                                         @error('hours')
@@ -86,8 +133,29 @@
                                                 class="selectpicker form-control @error('type') is-invalid @enderror"
                                                 name="type" value="{{ old('type') }}" required autofocus>
 
-                                            <option seleted value="1">ORDINARIA</option>
-                                            <option seleted value="2">EXTRAORDINARIA</option>
+                                            <option
+                                                    @if(old('type'))
+                                                        @if(old('type') == 1)
+                                                            selected
+                                                        @endif
+                                                    @elseif(request()->is('meetings/list/edit/*'))
+                                                        @if($meeting->type == 1)
+                                                            selected
+                                                        @endif
+                                                    @endif
+                                                    value="1">ORDINARIA
+                                            </option>
+                                            <option
+                                                    @if(old('type'))
+                                                        @if(old('type') == 2)
+                                                            selected
+                                                        @endif
+                                                    @elseif(request()->is('meetings/list/edit/*'))
+                                                        @if($meeting->type == 2)
+                                                            selected
+                                                        @endif
+                                                    @endif
+                                                    value="2">EXTRAORDINARIA</option>
 
                                         </select>
 
@@ -101,6 +169,46 @@
                                         @enderror
                                     </div>
 
+                                    <div class="form-group col-md-6">
+                                        <label for="place">Lugar</label>
+                                        <input id="place" type="text"
+                                               class="form-control @error('place') is-invalid @enderror" name="place"
+                                               @if(old('place'))
+                                               value="{{old('place')}}"
+                                               @elseif(request()->is('meetings/list/edit/*'))
+                                               value="{{$meeting->place}}"
+                                               @endif
+                                               required autocomplete="place" autofocus>
+                                        <small class="form-text text-muted">Indica el lugar de la reunión.
+                                        </small>
+
+                                        @error('place')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label for="datetime">Día y hora</label>
+                                        <input id="datetime" type="datetime-local"
+                                               class="form-control @error('datetime') is-invalid @enderror" name="datetime"
+                                               @if(old('datetime'))
+                                               value="{{old('datetime')}}"
+                                               @elseif(request()->is('meetings/list/edit/*'))
+                                               value="{{\Carbon\Carbon::parse($meeting->datetime)->format('Y-m-d\Th:i:s')}}"
+                                               @endif
+                                               required autofocus>
+                                        <small class="form-text text-muted">Indica el día y la hora de la reunión.
+                                        </small>
+
+                                        @error('datetime')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+
                                 </div>
 
                                 <div class="form-row">
@@ -108,14 +216,15 @@
                                     <div class="col-lg-6">
 
 
-                                        Añadir asistentes adicionales a la reunión
+                                        <label for="search">Añadir asistentes adicionales a la reunión</label>
+
 
                                         <input onkeydown="search_function()" type="text"
                                                class="form-control mb-4 mr-sm-4"
                                                id="search" placeholder="Buscar alumnos..." autofocus>
 
 
-                                        <div class="overflow-auto" id="usuarios_cotejados">
+                                        <div class="" id="usuarios_cotejados" style="height:150px; overflow-y: scroll;">
 
                                         </div>
 
@@ -170,7 +279,15 @@
 
                                     <div class="col-lg-12">
 
-                                        <button type="submit" class="btn btn-primary">Registrar reunión</button>
+                                        @if(request()->is('meetings/list/edit/*'))
+
+                                            <button type="submit" class="btn btn-primary">Actualizar reunión</button>
+
+                                        @else
+
+                                            <button type="submit" class="btn btn-primary">Registrar reunión</button>
+
+                                        @endif
 
                                     </div>
 
@@ -183,6 +300,21 @@
                     </div>
 
                     <script>
+
+                        function load_attendees(){
+                            $.ajax({
+                                url: '/meetings/list/attendees/' + $("#id").val(),
+                                success: function (respuesta) {
+                                    usuarios_seleccionados = respuesta;
+                                    add_list_to_view();
+                                    lista_usuarios_update();
+                                    search_function();
+                                },
+                                error: function () {
+                                    console.log("No se ha podido obtener la información");
+                                }
+                            });
+                        }
 
 
                         function getLista(sel){
@@ -232,6 +364,10 @@
                                     console.log("No se ha podido obtener la información");
                                 }
                             });
+
+                            @if(request()->is('meetings/list/edit/*'))
+                                load_attendees();
+                            @endif
 
                         });
                     </script>

@@ -29,12 +29,28 @@ function collation(search) {
         var name = users[i].name.toLowerCase();
         var surname = users[i].surname.toLowerCase();
 
-        if (name.includes(search) || surname.includes(search)) {
+        var array = search.split(" ");
+        if(array.length > 1){
+
+            for(var k = 0; k<array.length; k++){
+                if (name.includes(array[k]) || surname.includes(array[k])) {
+                    usuarios_cotejados[j] = users[i];
+                    j++;
+                }
+            }
+
+        }else if (name.includes(search) || surname.includes(search)) {
             usuarios_cotejados[j] = users[i];
             j++;
         }
 
     }
+
+    var filteredArray = usuarios_cotejados.filter(function(item, pos){
+        return usuarios_cotejados.indexOf(item)== pos;
+    });
+
+    usuarios_cotejados = filteredArray;
 
 }
 

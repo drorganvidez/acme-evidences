@@ -134,7 +134,7 @@
                                                id="search" placeholder="Buscar alumnos..." autofocus>
 
 
-                                        <div class="overflow-auto" id="usuarios_cotejados">
+                                        <div class="" id="usuarios_cotejados" style="height:150px; overflow-y: scroll;">
 
                                         </div>
 
