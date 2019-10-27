@@ -174,7 +174,7 @@ class EvidenceController extends Controller
             $proof = Proof::create([
                 'id_evidence' => $evidence->id,
                 'file_name' => $file->getClientOriginalName(),
-                'file_type' => $file->getClientOriginalExtension(),
+                'file_type' => strtolower($file->getClientOriginalExtension()),
                 'file_route' => $path,
                 'size' => $file->getClientSize(),
             ]);

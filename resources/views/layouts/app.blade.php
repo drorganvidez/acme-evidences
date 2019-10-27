@@ -35,6 +35,13 @@
 
     <script src="https://kit.fontawesome.com/ed0f6c0c4d.js" crossorigin="anonymous"></script>
 
+    <!-- Selectors -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+
+    <!-- Search -->
+    <script src="{{ asset('js/search.js') }}"></script>
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
 </head>
@@ -106,6 +113,10 @@
 
                                     <li class="nav-item {{ (request()->is('evidences/comite')) || (request()->is('evidences/comite/*')) || (request()->is('evidences/comite/view/*')) ? 'active' : '' }}">
                                         <a class="nav-link" href="{{ route('evidences.comite') }}">{{ __('Evidencias de mi comité') }}</a>
+                                    </li>
+
+                                    <li class="nav-item {{ (request()->is('meetings/*')) ? 'active' : '' }}">
+                                        <a class="nav-link" href="{{ route('meetings.main') }}">{{ __('Reuniones de mi comité') }}</a>
                                     </li>
 
                                 @endif

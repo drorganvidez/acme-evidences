@@ -44,6 +44,25 @@ Route::get('/account/journeys', 'AccountController@journeys')->name('account.jou
 // Subida de archivos
 Route::get('/proof/download/{id}', 'ProofController@download')->name('proof.download');
 
+// Reuniones
+Route::get('/meetings/main', 'MeetingController@main')->name('meetings.main');
+
+Route::post('/meetings/lists/create', 'MeetingController@lists_create')->name('meeting.lists.create');
+Route::get('/meetings/lists/{id}', 'MeetingController@ids')->name('meeting.lists.ids');
+Route::get('/meetings/lists', 'MeetingController@lists')->name('meetings.lists');
+Route::get('/meetings/lists/delete/{id}', 'MeetingController@lists_delete')->name('meetings.lists.delete');
+Route::get('/meetings/lists/edit/{id}', 'MeetingController@lists_edit')->name('meetings.lists.edit');
+Route::post('/meetings/lists/update', 'MeetingController@lists_update')->name('meetings.lists.update');
+
+
+Route::get('/meetings/list', 'MeetingController@list')->name('meetings.list');
+Route::get('/meetings/list/delete{id}', 'MeetingController@list_delete')->name('meetings.list.delete');
+Route::get('/meetings/list/edit/{id}', 'MeetingController@list_edit')->name('meetings.list.edit');
+Route::get('/meetings/new', 'MeetingController@new')->name('meetings.new');
+Route::get('/meetings/ajax', 'MeetingController@ajax')->name('meetings.ajax');
+
+Route::post('/meetings/create', 'MeetingController@create')->name('meeting.create');
+
 // Buscador
 Route::get('/search', 'SearchController@search_home')->name('search');
 Route::post('/evidences/all/search', 'SearchController@search')->name('search.administrator');

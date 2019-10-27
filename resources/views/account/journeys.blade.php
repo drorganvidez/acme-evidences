@@ -49,7 +49,7 @@
                                     <div class="form-group col-md-4">
                                         <label for="participation">Nivel de participación en las jornadas</label>
                                         <select id="participation"
-                                                class="form-control @error('participation') is-invalid @enderror"
+                                                class="selectpicker form-control @error('participation') is-invalid @enderror"
                                                 name="participation" value="{{ old('participation') }}" required
                                                 autofocus>
 

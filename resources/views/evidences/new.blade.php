@@ -22,7 +22,7 @@
                         <div class="form-row">
 
                             <div class="form-group col-md-6">
-                                <label for="title">Titulo</label>
+                                <label for="title">Título</label>
                                 <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="title" autofocus>
                                 <small class="form-text text-muted">Escribe un título que describa con precisión tu evidencia (mínimo 5 caracteres)</small>
 
@@ -47,7 +47,7 @@
 
                             <div class="form-group col-md-4">
                                 <label for="comite">Comité</label>
-                                <select id="comite" class="form-control @error('comite') is-invalid @enderror" name="comite" value="{{ old('comite') }}" required autofocus>
+                                <select id="comite" class="selectpicker form-control @error('comite') is-invalid @enderror" name="comite" value="{{ old('comite') }}" required autofocus>
                                     @foreach($comites as $comite)
                                         <option {{$comite->id == old('comite') ? 'selected' : ''}} value="{{$comite->id}}">
                                             {{$comite->title}}
