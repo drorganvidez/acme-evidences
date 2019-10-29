@@ -6,7 +6,7 @@
 
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
-        <h1 class="display-3">¡Bienvenid@s!</h1>
+        <h1 class="display-3" style="font-size: 40px">¡Bienvenid@s!</h1>
         <p class="lead">Esta app permite guardar y centralizar las evidencias de trabajo de todos los alumnos y alumnas matriculadas en la asignatura
             Evolución y Gestión de la Configuración para las Jornadas InnoSoft Days 2019</p>
         <a href="/evidences/new" class="btn btn-primary btn-lg">¡Crear evidencia!</a>
