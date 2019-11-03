@@ -84,13 +84,13 @@
                             @if(request()->is('evidences/list'))
                                 <div class="d-sm-flex" style="margin-bottom: 20px">
                                 {{ $evidences->links() }}
-                                <div class="ml-auto">
-                                    <p style="font-size: 25px">
-                                        <span class="badge badge-light">{{$count}} evidencias registradas</span>
-                                        <span class="badge badge-light">{{$total_horas}} horas registradas</span>
-                                    </p>
+                                    <div class="ml-auto">
+                                        <p style="font-size: 25px">
+                                            <span class="badge badge-light">{{$count}} evidencias registradas</span>
+                                            <span class="badge badge-light">{{$total_horas}} horas registradas</span>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
                             @else
                                 {{ $evidences->links() }}
                             @endif

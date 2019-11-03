@@ -101,6 +101,10 @@
 
                             @else
 
+                                <li class="nav-item {{ (request()->is('attendees/list')) ? 'active' : '' }}">
+                                    <a class="nav-link" href="{{ route('attendees.list') }}">{{ __('Mis asistencias') }}</a>
+                                </li>
+
                                 <li class="nav-item {{ (request()->is('evidences/list')) || (request()->is('evidences/view/*')) ? 'active' : '' }}">
                                     <a class="nav-link" href="{{ route('evidences.list') }}">{{ __('Mis evidencias') }}</a>
                                 </li>

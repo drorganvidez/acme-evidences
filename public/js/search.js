@@ -33,13 +33,13 @@ function collation(search) {
         if(array.length > 1){
 
             for(var k = 0; k<array.length; k++){
-                if (name.includes(array[k]) || surname.includes(array[k])) {
+                if (name.includes(array[k].toLowerCase()) || surname.includes(array[k].toLowerCase())) {
                     usuarios_cotejados[j] = users[i];
                     j++;
                 }
             }
 
-        }else if (name.includes(search) || surname.includes(search)) {
+        }else if (name.includes(search.toLowerCase()) || surname.includes(search.toLowerCase())) {
             usuarios_cotejados[j] = users[i];
             j++;
         }

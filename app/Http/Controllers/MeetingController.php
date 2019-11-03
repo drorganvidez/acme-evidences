@@ -11,6 +11,8 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
+use Illuminate\Support\Facades\DB;
+
 class MeetingController extends Controller
 {
     public function __construct()
@@ -119,10 +121,11 @@ class MeetingController extends Controller
 
     }
 
-    public function lists_update(Request $request){
+    public function lists_update(Request $request)
+    {
 
         // Actualizamos la información básica de la lista
-        $meeting_list_comite = MeetingListComite::where('id_list',$request->id)->first();
+        $meeting_list_comite = MeetingListComite::where('id_list', $request->id)->first();
         $meeting_list_comite->title = $request->title;
         $meeting_list_comite->save();
 
@@ -130,20 +133,19 @@ class MeetingController extends Controller
         $ids = explode(" ", $request->lista_usuarios);
 
         // Borramos todas las anteriores
-        MeetingList::where('id_list',$meeting_list_comite->id_list)->delete();
+        MeetingList::where('id_list', $meeting_list_comite->id_list)->delete();
 
 
-            // Guardamos las nuevas
-            foreach ($ids as $id_user) {
+        // Guardamos las nuevas
+        foreach ($ids as $id_user) {
 
-                // 2. Añadimos usuarios a dicha lista
-                MeetingList::create([
-                    'id_list' => $meeting_list_comite->id_list,
-                    'id_user' => $id_user
-                ]);
+            // 2. Añadimos usuarios a dicha lista
+            MeetingList::create([
+                'id_list' => $meeting_list_comite->id_list,
+                'id_user' => $id_user
+            ]);
 
-            }
-
+        }
 
 
         return redirect('meetings/lists');
@@ -152,6 +154,21 @@ class MeetingController extends Controller
 
     public function new()
     {
+
+        /*
+           Puede acceder a las listas predefinidas
+               - El administrador
+               - El encargado de un comité
+        */
+
+
+        $id_comite = Auth::user()->id_comite;
+
+        $es_administrador = Auth::user()->is_administrator;
+        $es_de_un_comite = Auth::user()->is_comite;
+        if (!$es_administrador && !$es_de_un_comite) {
+            return redirect("/home");
+        }
 
         $id_comite = Auth::user()->id_comite;
 
@@ -228,54 +245,87 @@ class MeetingController extends Controller
     }
 
 
-
     public function list()
     {
 
-        $id_comite = Auth::user()->id_comite;
-
-        $meetings = collect();
-
-        if ($id_comite == 7 || $id_comite == 8 || $id_comite == 9 || $id_comite == 10) {
-            $meetings = Meeting::whereBetween('id_comite', [7, 10])->orderBy('created_at', 'desc')->get();
-        } else if ($id_comite == 11 || $id_comite == 12 || $id_comite == 13 || $id_comite == 14) {
-            $meetings = Meeting::whereBetween('id_comite', [11, 14])->orderBy('created_at', 'desc')->get();
-        } else {
-            $meetings = Meeting::where('id_comite', $id_comite)->orderBy('created_at', 'desc')->get();
-        }
-
-        return view('meetings.list',['meetings' => $meetings]);
-
-    }
-
-    public function lists_delete($id){
-
         /*
-           Puede acceder a las reuniones:
-               - El encargado de un comité RELACIONADO con esa lista
+           Puede acceder a las listas predefinidas
+               - El administrador
+               - El encargado de un comité
        */
 
-        if (!Auth::user()->is_comite) {
+
+        $id_comite = Auth::user()->id_comite;
+
+        $es_administrador = Auth::user()->is_administrator;
+        $es_de_un_comite = Auth::user()->is_comite;
+        if (!$es_administrador && !$es_de_un_comite) {
             return redirect("/home");
         }
 
-        $meeting_list_comite = MeetingListComite::where('id_list',$id)->delete();
+        $meetings = collect();
+        $meetings = collect();
+        $meetings = collect();
+
+        if ($id_comite == 7 || $id_comite == 8 || $id_comite == 9 || $id_comite == 10) {
+            $meetings = DB::table('meetings')->whereBetween('id_comite', [7, 10])->orderBy('created_at', 'desc')->paginate(5);
+        } else if ($id_comite == 11 || $id_comite == 12 || $id_comite == 13 || $id_comite == 14) {
+            $meetings = DB::table('meetings')->whereBetween('id_comite', [11, 14])->orderBy('created_at', 'desc')->paginate(5);
+        } else {
+            $meetings = DB::table('meetings')->where('id_comite', $id_comite)->orderBy('created_at', 'desc')->paginate(5);
+        }
+
+        return view('meetings.list', ['meetings' => $meetings]);
+
+    }
+
+    public function lists_delete($id)
+    {
+
+        /*
+           Puede borrar una lista predefinida:
+               - El administrador
+               - El encargado de un comité RELACIONADO con esa lista
+       */
+
+
+        $meeting_list_comite = MeetingListComite::where('id_list', $id)->first();
+        if ($meeting_list_comite == null) {
+            return redirect("/home");
+        }
+
+        $es_administrador = Auth::user()->is_administrator;
+        $es_de_mi_comite = $this->es_de_mi_comite($meeting_list_comite->id_comite);
+        if (!$es_administrador && !$es_de_mi_comite) {
+            return redirect("/home");
+        }
+
+        $meeting_list_comite->delete();
 
         // Borramos todos los usuarios asociados a esta lista
-        MeetingList::where('id_list',$id)->delete();
+        MeetingList::where('id_list', $id)->delete();
 
         return redirect('meetings/lists');
 
     }
 
-    public function list_delete($id){
+    public function list_delete($id)
+    {
 
         /*
            Puede borrar a las reuniones:
+               - El administrador
                - El encargado de un comité RELACIONADO con esa lista
        */
 
-        if (!Auth::user()->is_comite) {
+        $meeting = Meeting::find($id);
+        if ($meeting == null) {
+            return redirect("/home");
+        }
+
+        $es_administrador = Auth::user()->is_administrator;
+        $es_de_mi_comite = $this->es_de_mi_comite($meeting->id_comite);
+        if (!$es_administrador && !$es_de_mi_comite) {
             return redirect("/home");
         }
 
@@ -283,25 +333,57 @@ class MeetingController extends Controller
         Meeting::find($id)->delete();
 
         // 2. Borramos las asistencias
-        MeetingAttendee::where('id_meeting',$id)->delete();
+        MeetingAttendee::where('id_meeting', $id)->delete();
 
         return redirect('meetings/list');
 
     }
 
-    public function lists_edit($id){
+    public function lists_edit($id)
+    {
 
-        $list = MeetingListComite::where('id_list',$id)->first();
+        /*
+           Puede editar una lista predefinida
+            - El administrador
+            - El encargado de un comité RELACIONADO con esa lista
+       */
+
+        $list = MeetingListComite::where('id_list', $id)->first();
+        if ($list == null) {
+            return redirect("/home");
+        }
+
+        $es_administrador = Auth::user()->is_administrator;
+        $es_de_mi_comite = $this->es_de_mi_comite($list->id_comite);
+        if (!$es_administrador && !$es_de_mi_comite) {
+            return redirect("/home");
+        }
+
 
         return view('meetings.lists', ['list' => $list]);
 
     }
 
-    public function list_edit($id){
+    public function list_edit($id)
+    {
 
         $meeting = Meeting::find($id);
+        if ($meeting == null) {
+            return redirect("/home");
+        }
+
+        /*
+           Puede editar una reunión
+            - El administrador
+            - El encargado de un comité RELACIONADO con esa reunión
+        */
 
         $id_comite = Auth::user()->id_comite;
+        $es_administrador = Auth::user()->is_administrator;
+        $es_de_mi_comite = $this->es_de_mi_comite($meeting->id_comite);
+        if (!$es_administrador && !$es_de_mi_comite) {
+            return redirect("/home");
+        }
 
         $listas = collect();
 
@@ -317,16 +399,17 @@ class MeetingController extends Controller
 
     }
 
-    public function attendees($id){
+    public function attendees($id)
+    {
 
         // Obtenemos los ids asistentes
-        $meeting_attendees = MeetingAttendee::where('id_meeting',$id)->get();
+        $meeting_attendees = MeetingAttendee::where('id_meeting', $id)->get();
 
         // Obtenemos los usuarios a partir de esos ids
 
         $users = collect();
 
-        foreach($meeting_attendees as $meeting_attendee){
+        foreach ($meeting_attendees as $meeting_attendee) {
             $user = User::find($meeting_attendee->id_user);
             $users->push($user);
         }
@@ -341,7 +424,8 @@ class MeetingController extends Controller
 
     }
 
-    public function attendee_update(Request $request){
+    public function attendee_update(Request $request)
+    {
 
         $request->validate([
             'title' => ['required', 'min:5', 'max:255'],
@@ -363,7 +447,7 @@ class MeetingController extends Controller
         // 2. Actualizamos todos los asistentes de esa reunión
         $ids = explode(" ", $request->lista_usuarios);
 
-        MeetingAttendee::where('id_meeting',$request->id)->delete();
+        MeetingAttendee::where('id_meeting', $request->id)->delete();
 
         foreach ($ids as $id_user) {
 
@@ -376,7 +460,59 @@ class MeetingController extends Controller
         }
 
 
-
         return redirect('meetings/list');
+    }
+
+    public function es_de_logistica($id_comite)
+    {
+        return $id_comite == 7 || $id_comite == 8 || $id_comite == 9 || $id_comite == 10;
+    }
+
+    public function es_de_comunicacion($id_comite)
+    {
+        return $id_comite == 11 || $id_comite == 12 || $id_comite == 13 || $id_comite == 14;
+    }
+
+    public function soy_de_un_comite()
+    {
+        return Auth::user()->is_comite;
+    }
+
+    public function soy_de_logistica()
+    {
+        $id_comite = Auth::user()->id_comite;
+        return $id_comite == 7 || $id_comite == 8 || $id_comite == 9 || $id_comite == 10;
+    }
+
+    public function soy_de_comunicacion()
+    {
+        $id_comite = Auth::user()->id_comite;
+        return $id_comite == 11 || $id_comite == 12 || $id_comite == 13 || $id_comite == 14;
+    }
+
+    function es_de_mi_comite($id_comite)
+    {
+
+        if (!$this->soy_de_un_comite()) {
+            return false;
+        }
+
+        // si es de logística
+        if ($this->es_de_logistica($id_comite) && $this->soy_de_logistica()) {
+            return true;
+        }
+
+        // si es de comunicación
+        if ($this->es_de_comunicacion($id_comite) && $this->soy_de_comunicacion()) {
+            return true;
+        }
+
+        // si es de cualquier otro comité
+        if ($id_comite == Auth::user()->id_comite) {
+            return true;
+        }
+
+        // si no es de ningún comité, devuelve FALSE
+        return false;
     }
 }

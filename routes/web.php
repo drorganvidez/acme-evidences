@@ -56,7 +56,7 @@ Route::post('/meetings/lists/update', 'MeetingController@lists_update')->name('m
 
 
 Route::get('/meetings/list', 'MeetingController@list')->name('meetings.list');
-Route::get('/meetings/list/delete{id}', 'MeetingController@list_delete')->name('meetings.list.delete');
+Route::get('/meetings/list/delete/{id}', 'MeetingController@list_delete')->name('meetings.list.delete');
 Route::get('/meetings/list/edit/{id}', 'MeetingController@list_edit')->name('meetings.list.edit');
 Route::get('/meetings/new', 'MeetingController@new')->name('meetings.new');
 Route::get('/meetings/ajax', 'MeetingController@ajax')->name('meetings.ajax');
@@ -65,6 +65,9 @@ Route::get('/meetings/list/attendees/{id}', 'MeetingController@attendees')->name
 Route::post('/meetings/list/attendees/update', 'MeetingController@attendee_update')->name('meeting.update');
 
 Route::post('/meetings/create', 'MeetingController@create')->name('meeting.create');
+
+// Asistencias
+Route::get('/attendees/list/', 'AttendeeController@attendees')->name('attendees.list');
 
 // Buscador
 Route::get('/search', 'SearchController@search_home')->name('search');

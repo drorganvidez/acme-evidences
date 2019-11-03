@@ -9,49 +9,39 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Reuniones de mi comité</li>
-                            <li class="breadcrumb-item active" aria-current="page">Reuniones registradas</li>
+                            <li class="breadcrumb-item active" aria-current="page">Mis asistencias</li>
                         </ol>
                     </nav>
 
 
-                    <div class="card-body">
-
-                        <ul class="nav nav-pills mb-3" id="pills-tab">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route('meetings.main')}}">Principal</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route('meetings.lists')}}">Listas predefinidas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{{route('meetings.list')}}">Reuniones registradas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{route('meetings.new')}}">Registrar nueva reunión</a>
-                            </li>
-                        </ul>
 
                         <div class="card-body">
 
 
-                            {{ $meetings->links() }}
+                            <div class="d-sm-flex" style="margin-bottom: 20px">
+                                <div class="ml-auto">
+                                    <p style="font-size: 25px">
+                                        <span class="badge badge-light">{{$total_horas}} horas de asistencia a reuniones</span>
+                                    </p>
+                                </div>
+                            </div>
 
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead class="thead-light">
                                     <tr>
+                                        <th scope="col">Horas</th>
                                         <th scope="col">Título de la reunión</th>
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Lugar</th>
                                         <th scope="col">Fecha y hora</th>
                                         <th scope="col">Creada</th>
-                                        <th scope="col">Herramientas</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($meetings as $meeting)
                                         <tr scope="row">
+                                            <td>{{$meeting->hours}}</td>
                                             <td>{{$meeting->title}}</td>
                                             <td>
                                                 @if($meeting->type == 1)
@@ -63,20 +53,6 @@
                                             <td>{{$meeting->place}}</td>
                                             <td>{{\Carbon\Carbon::parse($meeting->datetime)->format('d/m/Y h:i')}}</td>
                                             <td>{{ \Carbon\Carbon::parse($meeting->created_at)->diffForHumans() }}</td>
-                                            <td>
-                                                <a class="btn btn-primary btn-sm"
-                                                   href="{{ route('meetings.list.edit',$meeting->id) }}" role="button">
-                                                    <i class="far fa-edit"></i>
-                                                    Editar reunión</a>
-
-                                                <a class="btn btn-danger btn-sm" href="" role="button"
-                                                   data-toggle="modal"
-                                                   data-target="#delete_{{$meeting->id}}">
-                                                    <i class="fas fa-trash"></i>
-                                                    Eliminar
-                                                </a>
-
-                                            </td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -84,11 +60,29 @@
 
                             </div>
 
-                            {{ $meetings->links() }}
+                            <div class="jumbotron" style="padding: 20px">
+                                <div class="row">
+
+                                    <div class="col-lg-12">
+                                        <p>
+                                        <h2>Asistencia a reuniones</h2>
+                                        Aquí puedes consultar todo el cómputo de horas de asistencia a reuniones realizadas
+                                        durante las Jornadas InnoSoft Days 2019. Recuerda que el coordinador y/o secretario
+                                        de tu comité está obligado a registrar las reuniones que hayáis realizado.
+                                        </p>
+                                        <p>
+                                        Si consideras que hay un error, por favor, <b>ponte en contacto con el secretario y/o
+                                            coordinador de tu comité.</b>
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </div>
 
 
-                    @foreach($meetings as $meeting)
+                        @foreach($meetings as $meeting)
 
                         <!-- Modal -->
                             <div class="modal fade" id="delete_{{$meeting->id}}" tabindex="-1" role="dialog"
@@ -129,7 +123,7 @@
                             </div>
                         @endforeach
 
-                    </div>
+
 
 
                 </div>
