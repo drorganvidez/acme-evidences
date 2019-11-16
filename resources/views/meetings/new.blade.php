@@ -189,23 +189,43 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group col-md-6">
-                                        <label for="datetime">Día y hora</label>
-                                        <input id="datetime" type="datetime-local"
-                                               class="form-control @error('datetime') is-invalid @enderror" name="datetime"
-                                               @if(old('datetime'))
-                                               value="{{old('datetime')}}"
+                                    <div class="form-group col-md-3">
+                                        <label for="date">Día</label>
+                                        <input id="date" type="date"
+                                               class="form-control @error('date') is-invalid @enderror" name="date"
+                                               @if(old('date'))
+                                               value="{{old('date')}}"
                                                @elseif(request()->is('meetings/list/edit/*'))
-                                               value="{{\Carbon\Carbon::parse($meeting->datetime)->format('Y-m-d\Th:i:s')}}"
+                                               value="{{\Carbon\Carbon::parse($meeting->datetime)->format('Y-m-d')}}"
                                                @endif
                                                required autofocus>
-                                        <small class="form-text text-muted">Indica el día y la hora de la reunión.
+                                        <small class="form-text text-muted">Indica el día reunión.
                                         </small>
 
-                                        @error('datetime')
+                                        @error('date')
                                         <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label for="time">Hora</label>
+                                        <input id="time" type="time"
+                                               class="form-control @error('time') is-invalid @enderror" name="time"
+                                               @if(old('time'))
+                                               value="{{old('time')}}"
+                                               @elseif(request()->is('meetings/list/edit/*'))
+                                               value="{{\Carbon\Carbon::parse($meeting->datetime)->format('H:i')}}"
+                                               @endif
+                                               required autofocus>
+                                        <small class="form-text text-muted">Indica la hora de la reunión.
+                                        </small>
+
+                                        @error('time')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                         @enderror
                                     </div>
 

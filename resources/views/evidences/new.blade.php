@@ -106,7 +106,7 @@
                             <label for="file">Adjuntar archivos</label>
                             <input id="file" name="files[]" type="file" class="file form-control @error('file') is-invalid @enderror"
                             multiple data-show-upload="true" data-show-caption="true"
-                            autofocus required accept="image/png, image/jpeg, application/pdf"
+                            autofocus required accept="image/png, image/jpeg, application/pdf, .zip,.rar,.7zip"
                             value="{{ old('files[]') }}">
 
                             <small class="form-text text-muted">Adjunta archivos que respalden tu evidencia y el número de horas empleadas.</small>

@@ -210,7 +210,8 @@ class MeetingController extends Controller
             'hours' => ['required', 'numeric', 'between:0.5,99.99', 'max:100'],
             'type' => ['required', 'numeric', 'min: 1', 'max:2'],
             'place' => ['required', 'min:5', 'max:255'],
-            'datetime' => ['required'],
+            'date' => ['required'],
+            'time' => ['required'],
             'lista_usuarios' => ['required']
         ]);
 
@@ -223,7 +224,7 @@ class MeetingController extends Controller
             'hours' => $request->hours,
             'type' => $request->type,
             'place' => $request->place,
-            'datetime' => $request->datetime
+            'datetime' => $request->date." ".$request->time
         ]);
 
         // 2. Guardamos todos los asistentes de esa reunión
@@ -431,6 +432,9 @@ class MeetingController extends Controller
             'title' => ['required', 'min:5', 'max:255'],
             'hours' => ['required', 'numeric', 'between:0.5,99.99', 'max:100'],
             'type' => ['required', 'numeric', 'min: 1', 'max:2'],
+            'place' => ['required', 'min:5', 'max:255'],
+            'date' => ['required'],
+            'time' => ['required'],
             'lista_usuarios' => ['required']
         ]);
 
@@ -440,7 +444,7 @@ class MeetingController extends Controller
         $meeting->hours = $request->hours;
         $meeting->type = $request->type;
         $meeting->place = $request->place;
-        $meeting->datetime = $request->datetime;
+        $meeting->datetime = $request->date." ".$request->time;
         $meeting->save();
 
 
