@@ -56,28 +56,31 @@
 
 
                                 <div class="col-lg-12">
+                                    @if(\Carbon\Carbon::now()->lessThan(\Carbon\Carbon::create(2019, 12, 2, 23, 59, 59)))
 
-                                    @if($evidence->check == -1)
-                                        <span class="badge badge-secondary">Pendiente de aprobación</span>
-                                        <br>
-                                        <a class="btn btn-danger"
-                                           href="{{ route('evidences.check.reject',$evidence->id) }}"
-                                           role="button"><i class="fas fa-times"></i> No dar visto bueno a esta
-                                            evidencia</a>
-                                        <a class="btn btn-success"
-                                           href="{{ route('evidences.check',$evidence->id) }}"
-                                           role="button"><i class="fas fa-check"></i> Dar visto bueno a esta
-                                            evidencia</a>
-                                    @elseif($evidence->check == 0)
-                                        <a class="btn btn-success"
-                                           href="{{ route('evidences.check',$evidence->id) }}"
-                                           role="button"><i class="fas fa-check"></i> Dar visto bueno a esta
-                                            evidencia</a>
-                                    @else
-                                        <a class="btn btn-danger"
-                                           href="{{ route('evidences.check',$evidence->id) }}"
-                                           role="button"><i class="fas fa-times"></i> No dar visto bueno a esta
-                                            evidencia</a>
+                                        @if($evidence->check == -1)
+                                            <span class="badge badge-secondary">Pendiente de aprobación</span>
+                                            <br>
+                                            <a class="btn btn-danger"
+                                               href="{{ route('evidences.check.reject',$evidence->id) }}"
+                                               role="button"><i class="fas fa-times"></i> No dar visto bueno a esta
+                                                evidencia</a>
+                                            <a class="btn btn-success"
+                                               href="{{ route('evidences.check',$evidence->id) }}"
+                                               role="button"><i class="fas fa-check"></i> Dar visto bueno a esta
+                                                evidencia</a>
+                                        @elseif($evidence->check == 0)
+                                            <a class="btn btn-success"
+                                               href="{{ route('evidences.check',$evidence->id) }}"
+                                               role="button"><i class="fas fa-check"></i> Dar visto bueno a esta
+                                                evidencia</a>
+                                        @else
+                                            <a class="btn btn-danger"
+                                               href="{{ route('evidences.check',$evidence->id) }}"
+                                               role="button"><i class="fas fa-times"></i> No dar visto bueno a esta
+                                                evidencia</a>
+                                        @endif
+
                                     @endif
 
                                 </div>

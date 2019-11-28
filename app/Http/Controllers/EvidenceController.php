@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Redirect;
 
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
+
 class EvidenceController extends Controller
 {
     /**
@@ -48,6 +50,15 @@ class EvidenceController extends Controller
        */
         $es_administrador = Auth::user()->is_administrator;
         if($es_administrador){
+            return redirect("/home");
+        }
+
+        /*
+         *  CONTROL DE FECHA DE SUBIDA DE EVIDENCIAS
+         */
+        $now = Carbon::now();
+        $limit = Carbon::create(2019, 11, 28, 23, 59, 59);
+        if($now->greaterThan($limit)){
             return redirect("/home");
         }
 
@@ -297,6 +308,15 @@ class EvidenceController extends Controller
 
     public function check($id){
 
+        /*
+         *  CONTROL DE FECHA VALIDACIÓN DE EVIDENCIA
+         */
+        $now = Carbon::now();
+        $limit = Carbon::create(2019, 12, 2, 23, 59, 59);
+        if($now->greaterThan($limit)){
+            return redirect("/home");
+        }
+
         // obtención de la evidencia
         $evidence = Evidence::find($id);
         if($evidence ==null){
@@ -328,6 +348,15 @@ class EvidenceController extends Controller
     }
 
     public function check_reject($id){
+
+        /*
+         *  CONTROL DE FECHA VALIDACIÓN DE EVIDENCIA
+         */
+        $now = Carbon::now();
+        $limit = Carbon::create(2019, 12, 2, 23, 59, 59);
+        if($now->greaterThan($limit)){
+            return redirect("/home");
+        }
 
         // obtención de la evidencia
         $evidence = Evidence::find($id);

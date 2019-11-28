@@ -109,9 +109,11 @@
                                     <a class="nav-link" href="{{ route('evidences.list') }}">{{ __('Mis evidencias') }}</a>
                                 </li>
 
-                                <li class="nav-item {{ (request()->is('evidences/new')) ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('evidences.new') }}">{{ __('Crear evidencia') }}</a>
-                                </li>
+                                @if(\Carbon\Carbon::now()->lessThan(\Carbon\Carbon::create(2019, 11, 28, 23, 59, 59)))
+                                    <li class="nav-item {{ (request()->is('evidences/new')) ? 'active' : '' }}">
+                                        <a class="nav-link" href="{{ route('evidences.new') }}">{{ __('Crear evidencia') }}</a>
+                                    </li>
+                                @endif
 
                                 @if(Auth::user()->is_comite == 1)
 
