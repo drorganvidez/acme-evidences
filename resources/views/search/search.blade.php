@@ -67,6 +67,13 @@
                                         <p>Email: {{$user->email}}</p>
                                         <p>Participación en Jornadas: {{$user->journeys_participation}}</p>
                                         <p>Trabajo en las jornadas: {!! $user->journeys_description !!}</p>
+                                        <p>
+                                            <a class="btn btn-primary btn-sm" href="/profile/{{$user->id}}" role="button">
+                                                <i class="fas fa-id-badge"></i>
+                                                Ver perfil completo
+                                            </span>
+                                            </a>
+                                        </p>
                                     </div>
 
                                 </div>

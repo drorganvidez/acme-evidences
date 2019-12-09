@@ -73,3 +73,6 @@ Route::get('/attendees/list/', 'AttendeeController@attendees')->name('attendees.
 Route::get('/search', 'SearchController@search_home')->name('search');
 Route::post('/evidences/all/search', 'SearchController@search')->name('search.administrator');
 Route::post('/evidences/comite/search', 'SearchController@search')->name('search.comite');
+
+// Perfiles de usuario
+Route::get('/profile/{id}', 'ProfileController@id')->name('profile');
